@@ -23,13 +23,13 @@ Singleton {
             onRead: data => {
                 root.pauseOnBattery = (data.trim() === "true");
                 root._loaded = true;
-                root.recalculate();
+                recalcTimer.restart();
             }
         }
         onExited: {
             if (!root._loaded) {
                 root._loaded = true;
-                root.recalculate();
+                recalcTimer.restart();
             }
         }
     }
@@ -116,7 +116,7 @@ Singleton {
 
     Timer {
         id: recalcTimer
-        interval: 16
+        interval: 150
         onTriggered: root.recalculate()
     }
 

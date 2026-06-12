@@ -124,8 +124,7 @@ Searcher {
         watchChanges: true
         recursive: true
         path: Paths.wallsdir
-        filter: FileSystemModel.Files
-        nameFilters: ["*.jpg", "*.jpeg", "*.png", "*.webp", "*.tif", "*.tiff", "*.svg", "*.gif"]
+        filter: FileSystemModel.Images
     }
 
     FileSystemModel {
