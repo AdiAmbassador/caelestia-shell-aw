@@ -82,6 +82,12 @@ Item {
 
             placeholderText: qsTr("Type \"%1\" for commands").arg(GlobalConfig.launcher.actionPrefix)
 
+            onTextChanged: {
+                if (text === GlobalConfig.launcher.actionPrefix) {
+                    Wallpapers.updateWallpapers();
+                }
+            }
+
             onAccepted: {
                 const currentItem = list.currentList?.currentItem;
                 if (currentItem) {
@@ -128,11 +134,17 @@ Item {
                 }
             }
 
-            Component.onCompleted: forceActiveFocus()
+            Component.onCompleted: {
+                forceActiveFocus();
+                if (Wallpapers.restoreWallpaperMode) {
+                    text = `${GlobalConfig.launcher.actionPrefix}wallpaper `;
+                    Wallpapers.restoreWallpaperMode = false;
+                }
+            }
 
             Connections {
                 function onLauncherChanged(): void {
-                    if (!root.visibilities.launcher)
+                    if (!root.visibilities.launcher && !Wallpapers._refreshing)
                         search.text = "";
                 }
 
