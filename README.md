@@ -1,3 +1,77 @@
+#                        Caelestia Animated Wallpapers 
+
+#                                  Caelestia shell-AW
+
+​                                                 
+
+A feature-focused fork of **Caelestia Shell** that adds native animated/video wallpaper support and quality-of-life improvements for wallpaper management on Hyprland.
+
+
+
+## Overview:
+
+This project began as an experiment to bring animated wallpapers to Caelestia using QtMultimedia. During development, several additional improvements were implemented, including wallpaper pausing logic, video thumbnail generation, filesystem monitoring, and enhancements to the wallpaper picker experience.
+
+
+### Features:
+
+- Native animated/video wallpaper support.
+- Video wallpaper thumbnails.
+- Intelligent wallpaper pausing:
+  - Pause while on battery power.
+  - Pause when fullscreen applications are active.
+- Dynamic color extraction from wallpapers.
+- Improved wallpaper picker animations and responsiveness.
+- Video decoding optimizations and Vulkan-related lag fixes.
+- Implements Caelestia's Material You theme generation in animated wallpapers for cohesiveness.
+  
+
+### Status:
+
+This project is currently maintained as a feature fork of Caelestia.
+
+
+## Notes:
+
+##### Animated wallpapers are currently discovered from:
+
+```
+~/Pictures/Wallpapers/Animated
+```
+
+##### Refresh Button:
+
+- Animated wallpapers use manual thumbnail generation.
+- Press **Refresh** after adding or removing videos to regenerate thumbnails and update the library.
+- For large collections (50+ videos), thumbnail generation may take several seconds. This behavior is intentional and avoids running a permanent background thumbnail service.
+
+### Relationship to Upstream:
+
+This repository is based on the excellent Caelestia Shell project.
+
+Full credit for the original shell architecture, widgets, configuration system, installer, and overall project belongs to the Caelestia developers and contributors.
+
+The modifications in this fork are primarily focused on:
+
+- Animated wallpapers.
+- Wallpaper management improvements.
+- UI enhancements.
+- Performance and usability tweaks.
+
+### Why This Fork Exists
+
+Animated wallpapers are currently outside the scope of the upstream project. This fork exists to explore and maintain those features while remaining as compatible with upstream Caelestia as possible.
+
+------
+
+#                          Upstream Caelestia Documentation
+
+The original Caelestia documentation begins below.
+
+
+
+
+
 <h1 align=center>caelestia-shell</h1>
 
 <div align=center>
