@@ -8,6 +8,15 @@ A feature-focused fork of **Caelestia Shell** that adds native animated/video wa
 
 
 
+
+
+https://github.com/user-attachments/assets/47f61a0c-7610-493e-8a5c-aeed5731cdc2
+
+
+
+
+
+
 ## Overview:
 
 This project began as an experiment to bring animated wallpapers to Caelestia using QtMultimedia. During development, several additional improvements were implemented, including wallpaper pausing logic, video thumbnail generation, filesystem monitoring, and enhancements to the wallpaper picker experience.
