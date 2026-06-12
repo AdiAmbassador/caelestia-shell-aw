@@ -20,10 +20,10 @@ Singleton {
         command: ["cat", Quickshell.env("HOME") + "/.cache/caelestia/pauseOnBattery.txt"]
         running: true
         stdout: SplitParser {
-            onRead: data => { 
-                root.pauseOnBattery = (data.trim() === "true"); 
-                root._loaded = true; 
-                root.recalculate(); 
+            onRead: data => {
+                root.pauseOnBattery = (data.trim() === "true");
+                root._loaded = true;
+                root.recalculate();
             }
         }
         onExited: {
@@ -44,11 +44,12 @@ Singleton {
     }
 
     function recalculate() {
-        if (!_loaded) return;
+        if (!_loaded)
+            return;
 
         let newPaused = false;
         let reason = "None";
-        
+
         // Rule #1 — Battery
         if (pauseOnBattery && UPower.onBattery) {
             newPaused = true;
@@ -56,14 +57,14 @@ Singleton {
         } else {
             const monitor = Hyprland.focusedMonitor;
             const ws = monitor && monitor.activeWorkspace ? monitor.activeWorkspace : Hyprland.focusedWorkspace;
-            
+
             if (ws) {
                 // Strictly filter global toplevels to ONLY the focused workspace
                 const toplevels = Hyprland.toplevels.values.filter(t => {
                     const obj = t.lastIpcObject;
                     return obj && obj.workspace && obj.workspace.id === ws.id;
                 });
-                
+
                 // Rule #3 — 2+ visible windows
                 if (toplevels.length >= 2) {
                     newPaused = true;
@@ -92,19 +93,22 @@ Singleton {
                 }
             }
         }
-        
+
         paused = newPaused;
         console.log("[DEBUG] WallpaperPauser recalculated. Final paused state:", paused, "Reason:", reason);
     }
 
     Connections {
         target: Hyprland
-        function onFocusedWorkspaceChanged() { root.recalculate(); }
-        function onFocusedMonitorChanged() { root.recalculate(); }
+        function onFocusedWorkspaceChanged() {
+            root.recalculate();
+        }
+        function onFocusedMonitorChanged() {
+            root.recalculate();
+        }
         function onRawEvent(event) {
             const n = event.name;
-            if (n.startsWith("workspace") || n.startsWith("activewindow") || n.startsWith("createworkspace") || n.startsWith("destroyworkspace") ||
-                ["fullscreen", "changefloatingmode", "minimize", "movewindow", "openwindow", "closewindow", "moveworkspace", "focusedmon"].includes(n)) {
+            if (n.startsWith("workspace") || n.startsWith("activewindow") || n.startsWith("createworkspace") || n.startsWith("destroyworkspace") || ["fullscreen", "changefloatingmode", "minimize", "movewindow", "openwindow", "closewindow", "moveworkspace", "focusedmon"].includes(n)) {
                 recalcTimer.restart();
             }
         }

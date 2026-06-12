@@ -88,8 +88,7 @@ Item {
             }
 
             // First load: player A loaded and is already the active player
-            if (root._usePlayerA && mediaStatus === MediaPlayer.LoadedMedia
-                && playerB.source == "" && !root._swapping) {
+            if (root._usePlayerA && mediaStatus === MediaPlayer.LoadedMedia && playerB.source == "" && !root._swapping) {
                 if (root.autoStart) {
                     playerA.play();
                 } else {
@@ -178,8 +177,10 @@ Item {
         if (root.autoStart) {
             newPlayer.play();
         } else {
-            if (swapToA) root.forceFrameRenderA = true;
-            else root.forceFrameRenderB = true;
+            if (swapToA)
+                root.forceFrameRenderA = true;
+            else
+                root.forceFrameRenderB = true;
             newPlayer.play();
         }
 
