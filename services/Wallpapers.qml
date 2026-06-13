@@ -11,7 +11,7 @@ import qs.utils
 Searcher {
     id: root
 
-    readonly property string currentNamePath: Paths.state + "/wallpaper/path.txt"
+    readonly property string currentNamePath: `${Paths.state}/wallpaper/path.txt`
     readonly property list<string> smartArg: GlobalConfig.services.smartScheme ? [] : ["--no-smart"]
     readonly property list<string> validVideoExtensions: ["mp4", "webm", "mkv"]
     readonly property list<string> validWallpaperExtensions: [
@@ -46,14 +46,14 @@ Searcher {
         wallpaperMode = mode;
     }
 
-    function isVideo(path) {
+    function isVideo(path: string): bool {
         const clean = String(path || "").split(/[?#]/)[0].toLowerCase();
         const index = clean.lastIndexOf(".");
         const ext = index >= 0 ? clean.slice(index + 1) : "";
         return ["mp4", "webm", "mkv"].includes(ext);
     }
 
-    function setWallpaper(path) {
+    function setWallpaper(path: string): void {
         let clean = String(path || "").split(/[?#]/)[0];
         if (clean.indexOf("file://") === 0) clean = clean.substring(7);
         actualCurrent = clean;
@@ -61,10 +61,10 @@ Searcher {
             previewColourLock = false;
             stopPreview();
         }
-        Quickshell.execDetached(["caelestia", "wallpaper", "-f", clean].concat(smartArg));
+        Quickshell.execDetached(["caelestia", "wallpaper", "-f", clean, ...smartArg]);
     }
 
-    function preview(path) {
+    function preview(path: string): void {
         let clean = String(path || "").split(/[?#]/)[0];
         if (clean.indexOf("file://") === 0) clean = clean.substring(7);
         previewPath = clean;
@@ -74,7 +74,7 @@ Searcher {
             getPreviewColoursProc.running = true;
     }
 
-    function stopPreview() {
+    function stopPreview(): void {
         showPreview = false;
         if (!previewColourLock)
             Colours.showPreview = false;
@@ -88,16 +88,16 @@ Searcher {
         })
 
     IpcHandler {
-        function get() {
+        function get(): string {
             return root.actualCurrent;
         }
 
-        function set(path) {
+        function set(path: string): void {
             root.setWallpaper(path);
         }
 
-        function list() {
-            return root.list.map(function(w) { return w.path; }).join("\n");
+        function list(): string {
+            return root.list.map(w => w.path).join("\n");
         }
 
         target: "wallpaper"
@@ -121,16 +121,17 @@ Searcher {
     FileSystemModel {
         id: staticWallpapers
 
-        watchChanges: true
+        watchChanges: false
         recursive: true
         path: Paths.wallsdir
-        filter: FileSystemModel.Images
+        filter: FileSystemModel.Files
+        nameFilters: ["*.jpg", "*.jpeg", "*.png", "*.webp", "*.tif", "*.tiff", "*.svg", "*.gif"]
     }
 
     FileSystemModel {
         id: animatedWallpapers
 
-        watchChanges: true
+        watchChanges: false
         recursive: true
         path: Paths.wallsdir + "/Animated"
         filter: FileSystemModel.Files
@@ -140,7 +141,7 @@ Searcher {
     Process {
         id: getPreviewColoursProc
 
-        command: ["caelestia", "wallpaper", "-p", root.previewPath].concat(root.smartArg)
+        command: ["caelestia", "wallpaper", "-p", root.previewPath, ...root.smartArg]
         stdout: StdioCollector {
             onStreamFinished: {
                 Colours.load(text, true);
@@ -191,7 +192,7 @@ Searcher {
         id: _extractThumbsProc
 
         command: ["caelestia", "wallpaper", "--extract-thumbs"]
-        onExited: function(exitCode, exitStatus) {
+        onExited: (exitCode, exitStatus) => {
             root._refreshing = false;
             root.cacheBuster = Date.now().toString();
             root.restoreWallpaperMode = true;
