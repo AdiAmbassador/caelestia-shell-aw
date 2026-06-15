@@ -121,7 +121,7 @@ Searcher {
     FileSystemModel {
         id: staticWallpapers
 
-        watchChanges: false
+        watchChanges: true
         recursive: true
         path: Paths.wallsdir
         filter: FileSystemModel.Files
@@ -131,7 +131,7 @@ Searcher {
     FileSystemModel {
         id: animatedWallpapers
 
-        watchChanges: false
+        watchChanges: true
         recursive: true
         path: Paths.wallsdir + "/Animated"
         filter: FileSystemModel.Files
