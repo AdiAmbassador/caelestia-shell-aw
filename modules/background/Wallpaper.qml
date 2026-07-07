@@ -184,8 +184,7 @@ Item {
 
         function update(): void {
             const newPath = root.sourceIsVideo ? Wallpapers.getWallpaperThumb(root.source, Wallpapers.cacheBuster) : root.source;
-            
-            if (!root.sourceIsVideo && path === root.source) {
+            if (path === newPath && String(source) === newPath && status === Image.Ready) {
                 root.current = this;
                 return;
             }

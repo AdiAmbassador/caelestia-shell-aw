@@ -104,6 +104,10 @@ Item {
         sourceComponent: ColumnLayout {
             readonly property var realList: listComp
             readonly property int count: listComp.count
+            readonly property int currentIndex: listComp.currentIndex
+            function incrementCurrentIndex() { listComp.incrementCurrentIndex(); }
+            function decrementCurrentIndex() { listComp.decrementCurrentIndex(); }
+            readonly property var currentItem: listComp.currentItem
             spacing: Tokens.spacing.normal
             implicitWidth: listComp.implicitWidth
 
