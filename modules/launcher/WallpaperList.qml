@@ -66,7 +66,8 @@ PathView {
         interval: 100
         repeat: false
         onTriggered: {
-            if (!root || !scriptModel.values) return;
+            if (!root || !scriptModel.values)
+                return;
             if (scriptModel.values[root.currentIndex]) {
                 Wallpapers.preview(scriptModel.values[root.currentIndex].path);
             }

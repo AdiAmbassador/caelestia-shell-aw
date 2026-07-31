@@ -13,6 +13,9 @@ Item {
     property alias error: root._activeError
     property alias errorString: root._activeErrorString
 
+    // Expose playing state for background/Wallpaper.qml
+    readonly property bool playing: playbackState === MediaPlayer.PlayingState
+
     // Internal: track which player is active (true = A, false = B)
     property bool _usePlayerA: true
     property int _activePlaybackState: _usePlayerA ? playerA.playbackState : playerB.playbackState
@@ -55,17 +58,11 @@ Item {
         visible: root._usePlayerA
     }
 
-    AudioOutput {
-        id: mutedOutputA
-        muted: true
-        volume: 0
-    }
-
     MediaPlayer {
         id: playerA
 
         videoOutput: outputA
-        audioOutput: mutedOutputA
+        audioOutput: null
         loops: MediaPlayer.Infinite
         autoPlay: false
 
@@ -111,17 +108,11 @@ Item {
         visible: !root._usePlayerA
     }
 
-    AudioOutput {
-        id: mutedOutputB
-        muted: true
-        volume: 0
-    }
-
     MediaPlayer {
         id: playerB
 
         videoOutput: outputB
-        audioOutput: mutedOutputB
+        audioOutput: null
         loops: MediaPlayer.Infinite
         autoPlay: false
 

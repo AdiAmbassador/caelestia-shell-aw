@@ -145,7 +145,17 @@ PageBase {
                     id: wallImg
 
                     anchors.fill: parent
-                    source: Wallpapers.current
+                    source: {
+                    	const path = Wallpapers.current;
+                    	if (!path) return "";
+
+                    	if (Wallpapers.isVideo(path)) {
+                    		const thumb = Wallpapers.getWallpaperThumb(path, Wallpapers.cacheBuster);
+                    		return (typeof thumb === "string" && thumb !== "undefined") ? thumb : "";
+                    	}
+
+                    	return path;
+                    }
                     preventInit: wallIndicatorLoader.opacity > 0
                     fadeOutAnim: Anim.DefaultEffects
                     fadeInAnim: Anim.SlowEffects
@@ -227,6 +237,15 @@ PageBase {
             text: qsTr("Pause animated wallpapers behind windows")
             checked: WallpaperPauser.pauseOnWindowOverlap
             onToggled: WallpaperPauser.pauseOnWindowOverlap = checked
+        }
+
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+
+            text: qsTr("Animate wallpaper transitions")
+            checked: Wallpapers.enableAnimation
+            onToggled: Wallpapers.enableAnimation = checked
         }
 
         ToggleRow {

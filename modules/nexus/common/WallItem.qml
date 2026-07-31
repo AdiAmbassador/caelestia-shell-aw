@@ -11,7 +11,7 @@ import qs.services
 Item {
     id: root
 
-    property alias source: img.source
+    property string source: ""
     property alias text: label.text
     property alias radius: imgWrapper.radius
     property alias imgHeight: imgWrapper.implicitHeight
@@ -71,6 +71,18 @@ Item {
                 anchors.fill: parent
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
+
+                source: {
+                    const src = root.source;
+                    if (!src) return "";
+                    
+                    if (Wallpapers.isVideo(src)) {
+                        const thumb = Wallpapers.getWallpaperThumb(src, Wallpapers.cacheBuster);
+                        return (typeof thumb === "string" && thumb !== "undefined") ? thumb : "";
+                    }
+                    return src;
+                }
+                
                 sourceSize: {
                     const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
                     return Qt.size(width * dpr, height * dpr);

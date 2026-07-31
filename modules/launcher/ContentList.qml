@@ -52,7 +52,7 @@ Item {
             PropertyChanges {
                 root.implicitWidth: Math.max(root.Tokens.sizes.launcher.itemWidth * 1.2, wallpaperList.implicitWidth)
                 root.implicitHeight: root.Tokens.sizes.launcher.wallpaperHeight + 56
-                wallpaperList.active: true
+                wallpaperList.active: root.screenState.launcher
             }
         }
     ]
@@ -104,20 +104,20 @@ Item {
         sourceComponent: ColumnLayout {
             readonly property var realList: listComp
             readonly property int count: listComp.count
-            spacing: Tokens.spacing.normal
+            spacing: root.Tokens.spacing.normal
             implicitWidth: listComp.implicitWidth
 
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: Tokens.spacing.normal * 1.06
+                spacing: root.Tokens.spacing.normal * 1.06
 
                 IconTextButton {
                     icon: "image"
                     text: qsTr("Static")
-                    font.pointSize: Tokens.font.size.small
+                    font.pointSize: root.Tokens.font.size.small
                     isRound: true
-                    horizontalPadding: Tokens.padding.medium
-                    verticalPadding: Tokens.padding.extraSmall
+                    horizontalPadding: root.Tokens.padding.medium
+                    verticalPadding: root.Tokens.padding.extraSmall
                     type: Wallpapers.wallpaperMode === "static" ? IconTextButton.Filled : IconTextButton.Tonal
                     onClicked: Wallpapers.setWallpaperMode("static")
                 }
@@ -125,10 +125,10 @@ Item {
                 IconTextButton {
                     icon: "movie"
                     text: qsTr("Animated")
-                    font.pointSize: Tokens.font.size.small
+                    font.pointSize: root.Tokens.font.size.small
                     isRound: true
-                    horizontalPadding: Tokens.padding.medium
-                    verticalPadding: Tokens.padding.extraSmall
+                    horizontalPadding: root.Tokens.padding.medium
+                    verticalPadding: root.Tokens.padding.extraSmall
                     type: Wallpapers.wallpaperMode === "animated" ? IconTextButton.Filled : IconTextButton.Tonal
                     onClicked: Wallpapers.setWallpaperMode("animated")
                 }
@@ -136,11 +136,10 @@ Item {
                 IconTextButton {
                     icon: "refresh"
                     text: qsTr("Refresh")
-                    font.pointSize: Tokens.font.size.small
-                    scale: 0.9
+                    font.pointSize: root.Tokens.font.size.small
                     isRound: true
-                    horizontalPadding: Tokens.padding.medium
-                    verticalPadding: Tokens.padding.extraSmall
+                    horizontalPadding: root.Tokens.padding.medium
+                    verticalPadding: root.Tokens.padding.extraSmall
                     visible: Wallpapers.wallpaperMode === "animated"
                     type: IconTextButton.Tonal
                     onClicked: {
@@ -153,12 +152,12 @@ Item {
                     running: Wallpapers._refreshing && Wallpapers.wallpaperMode === "animated"
                     repeat: true
                     interval: 400
-                    onTriggered: processingText.dotCount = (processingText.dotCount % 3) + 1;
+                    onTriggered: processingText.dotCount = (processingText.dotCount % 3) + 1
                 }
 
                 Text {
                     id: processingText
-                    font.pointSize: Tokens.font.size.small
+                    font.pointSize: root.Tokens.font.size.small
                     color: Colours.palette.m3secondary
                     visible: processingDotsTimer.running
                     Layout.alignment: Qt.AlignVCenter
@@ -188,8 +187,8 @@ Item {
         opacity: count === 0 ? 1 : 0
         scale: count === 0 ? 1 : 0.5
 
-        spacing: Tokens.spacing.medium
-        padding: Tokens.padding.large
+        spacing: root.Tokens.spacing.medium
+        padding: root.Tokens.padding.large
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -197,7 +196,7 @@ Item {
         MaterialIcon {
             text: root.state === "wallpapers" ? "wallpaper_slideshow" : "manage_search"
             color: Colours.palette.m3onSurfaceVariant
-            fontStyle: Tokens.font.icon.extraLarge
+            fontStyle: root.Tokens.font.icon.extraLarge
 
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -208,13 +207,13 @@ Item {
             StyledText {
                 text: root.state === "wallpapers" ? qsTr("No wallpapers found") : qsTr("No results")
                 color: Colours.palette.m3onSurfaceVariant
-                font: Tokens.font.body.builders.large.weight(Font.Medium).build()
+                font: root.Tokens.font.body.builders.large.weight(Font.Medium).build()
             }
 
             StyledText {
                 text: root.state === "wallpapers" && Wallpapers.list.length === 0 ? qsTr("Try putting some wallpapers in %1").arg(Paths.shortenHome(Paths.wallsdir)) : qsTr("Try searching for something else")
                 color: Colours.palette.m3onSurfaceVariant
-                font: Tokens.font.body.medium
+                font: root.Tokens.font.body.medium
             }
         }
 
@@ -231,13 +230,11 @@ Item {
 
     Behavior on implicitWidth {
         enabled: root.screenState.launcher
-
         Anim {}
     }
 
     Behavior on implicitHeight {
         enabled: root.screenState.launcher
-
         Anim {}
     }
 }
