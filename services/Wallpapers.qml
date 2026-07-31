@@ -31,7 +31,7 @@ Searcher {
         for (let i = 0; i < s.length; i++) {
             h = (h * 33 + s.charCodeAt(i)) >>> 0;
         }
-        return h.toString(10);
+        return h.toString();
     }
 
     function getWallpaperThumb(path, buster) {
