@@ -17,20 +17,26 @@ Item {
             return qsTr("FP ERROR: %1").arg(pam.fprint.message);
         if (pam.howdy.state === Pam.Error)
             return qsTr("FACE ERROR: %1").arg(pam.howdy.message);
+        if (pam.gaze.state === Pam.Error)
+            return qsTr("FACE ERROR: %1").arg(pam.gaze.message);
         if (pam.state === Pam.Error)
             return qsTr("PW ERROR: %1").arg(pam.passwd.message);
 
-        // Fprint/howdy fail
+        // Fprint/howdy/gaze fail
         if (pam.state !== Pam.MaxTries) {
             if (pam.fprint.state === Pam.Failed)
                 return qsTr("Fingerprint not recognized (%1/%2). Please try again or use password.").arg(pam.fprint.tries).arg(GlobalConfig.lock.maxFprintTries);
             if (pam.howdy.state === Pam.Failed)
                 return qsTr("Face not recognized (%1/%2). Please try again or use password.").arg(pam.howdy.tries).arg(GlobalConfig.lock.maxHowdyTries);
+            if (pam.gaze.state === Pam.Failed)
+                return qsTr("Face not recognized (%1/%2). Please try again or use password.").arg(pam.gaze.tries).arg(GlobalConfig.lock.maxGazeTries);
         } else {
             if (pam.fprint.state === Pam.Failed)
                 return qsTr("Fingerprint not recognized (%1/%2). Please try again.").arg(pam.fprint.tries).arg(GlobalConfig.lock.maxFprintTries);
             if (pam.howdy.state === Pam.Failed)
                 return qsTr("Face not recognized (%1/%2). Please try again.").arg(pam.howdy.tries).arg(GlobalConfig.lock.maxHowdyTries);
+            if (pam.gaze.state === Pam.Failed)
+                return qsTr("Face not recognized (%1/%2). Please try again.").arg(pam.gaze.tries).arg(GlobalConfig.lock.maxGazeTries);
         }
 
         if (pam.lockMessage) // Password max tries message
@@ -42,6 +48,8 @@ Item {
                 return qsTr("Incorrect password. Please try again or use fingerprint.");
             if (pam.howdy.available && pam.howdy.state !== Pam.MaxTries)
                 return qsTr("Incorrect password. Please try again or use face.");
+            if (pam.gaze.available && pam.gaze.state !== Pam.MaxTries)
+                return qsTr("Incorrect password. Please try again or use face.");
             return qsTr("Incorrect password. Please try again.");
         }
 
@@ -51,13 +59,17 @@ Item {
                 return qsTr("Maximum password attempts reached. Please use fingerprint.");
             if (pam.howdy.available && pam.howdy.state !== Pam.MaxTries)
                 return qsTr("Maximum password attempts reached. Please use face.");
-            if (pam.fprint.available || pam.howdy.available)
+            if (pam.gaze.available && pam.gaze.state !== Pam.MaxTries)
+                return qsTr("Maximum password attempts reached. Please use face.");
+            if (pam.fprint.available || pam.howdy.available || pam.gaze.available)
                 return qsTr("Maximum attempts for all authentication methods reached.");
             return qsTr("Maximum password attempts reached.");
         }
         if (pam.fprint.state === Pam.MaxTries)
             return qsTr("Maximum fingerprint attempts reached. Please use password.");
         if (pam.howdy.state === Pam.MaxTries)
+            return qsTr("Maximum face attempts reached. Please use password.");
+        if (pam.gaze.state === Pam.MaxTries)
             return qsTr("Maximum face attempts reached. Please use password.");
 
         return "";

@@ -23,6 +23,7 @@ Scope {
     readonly property alias passwd: passwd
     readonly property alias fprint: fprint
     readonly property alias howdy: howdy
+    readonly property alias gaze: gaze
 
     property string lockMessage
     property int state
@@ -38,12 +39,18 @@ Scope {
         if (howdy.canAttempt && !howdy.active && (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) && buffer.length === 0)
             return howdy.start(); // Gate on active so double enter still allows empty password
 
+        // Trigger gaze on enter while empty buffer (if howdy is not available/active)
+        if (gaze.canAttempt && !gaze.active && !howdy.active && (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) && buffer.length === 0)
+            return gaze.start();
+
         if (state === Pam.MaxTries)
             return;
 
-        // Abort howdy on pwd input
+        // Abort howdy/gaze on pwd input
         if (howdy.active)
             howdy.abort();
+        if (gaze.active)
+            gaze.abort();
 
         if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
             passwd.start();
@@ -68,7 +75,7 @@ Scope {
     }
 
     function clearTransientState(): void {
-        for (const obj of [root, fprint, howdy])
+        for (const obj of [root, fprint, howdy, gaze])
             if (obj.state !== Pam.MaxTries)
                 obj.state = Pam.None;
     }
@@ -142,10 +149,21 @@ Scope {
         maxTries: GlobalConfig.lock.maxHowdyTries
     }
 
+    ManualPamContext {
+        id: gaze
+
+        config: "gaze"
+        availCommand: ["sh", "-c", "command -v gaze && systemctl is-active --quiet gazed"]
+        enabled: GlobalConfig.lock.enableGaze
+        maxTries: GlobalConfig.lock.maxGazeTries
+    }
+
     Connections {
         function onResumed(): void {
             if (howdy.canAttempt && !howdy.active && GlobalConfig.lock.triggerHowdyOnWake)
                 howdy.start();
+            if (gaze.canAttempt && !gaze.active && GlobalConfig.lock.triggerGazeOnWake)
+                gaze.start();
         }
 
         target: SessionManager
@@ -156,8 +174,10 @@ Scope {
             if (root.lock.secure) {
                 fprint.checkAvailable();
                 howdy.checkAvailable();
+                gaze.checkAvailable();
                 fprint.reset();
                 howdy.reset();
+                gaze.reset();
                 root.buffer = "";
                 root.state = Pam.None;
                 root.lockMessage = "";
@@ -167,6 +187,7 @@ Scope {
         function onUnlock(): void {
             fprint.abort();
             howdy.abort();
+            gaze.abort();
             passwd.abort();
         }
 
@@ -181,6 +202,11 @@ Scope {
         function onEnableHowdyChanged(): void {
             if (!GlobalConfig.lock.enableHowdy && howdy.active)
                 howdy.abort();
+        }
+
+        function onEnableGazeChanged(): void {
+            if (!GlobalConfig.lock.enableGaze && gaze.active)
+                gaze.abort();
         }
 
         target: GlobalConfig.lock
