@@ -4,12 +4,9 @@ import Quickshell.Services.UPower
 import Caelestia
 import Caelestia.Config
 import Caelestia.Services
-
 Scope {
     id: root
-
     readonly property list<var> warnLevels: [...GlobalConfig.general.battery.warnLevels].sort((a, b) => b.level - a.level)
-
     Connections {
         function onOnBatteryChanged(): void {
             if (UPower.onBattery) {
@@ -22,36 +19,27 @@ Scope {
                     level.warned = false;
             }
         }
-
         target: UPower
     }
-
     Connections {
         function onPercentageChanged(): void {
             if (!UPower.onBattery)
                 return;
-
             const p = UPower.displayDevice.percentage * 100;
             for (const level of root.warnLevels) {
                 if (p <= level.level && !level.warned) {
                     level.warned = true;
                     Toaster.toast(level.title ?? qsTr("Battery warning"), level.message ?? qsTr("Battery level is low"), level.icon ?? "battery_android_alert", level.critical ? Toast.Error : Toast.Warning);
+                    if (level.command) Quickshell.execDetached(["fish", "-c", level.command]);
+                    if (level.shutdown && !shutdownTimer.running) shutdownTimer.start();
                 }
             }
-
-            if (!hibernateTimer.running && p <= GlobalConfig.general.battery.criticalLevel) {
-                Toaster.toast(qsTr("Hibernating in 5 seconds"), qsTr("Hibernating to prevent data loss"), "battery_android_alert", Toast.Error);
-                hibernateTimer.start();
-            }
         }
-
         target: UPower.displayDevice
     }
-
     Timer {
-        id: hibernateTimer
-
-        interval: 5000
-        onTriggered: SessionManager.hibernate()
+        id: shutdownTimer
+        interval: 60000
+        onTriggered: Quickshell.execDetached(["fish", "-c", "shutdown now"])
     }
 }

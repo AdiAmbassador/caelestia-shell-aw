@@ -16,7 +16,7 @@ import qs.services
 ShellRoot {
     id: root
 
-    settings.watchFiles: true
+    settings.watchFiles: false
 
     Binding {
         target: ShellState
