@@ -94,7 +94,7 @@ Item {
     Loader {
         id: wallpaperList
 
-        asynchronous: true
+        asynchronous: false
         active: false
 
         anchors.top: parent.top

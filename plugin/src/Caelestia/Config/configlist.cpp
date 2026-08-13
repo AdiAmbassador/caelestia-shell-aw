@@ -12,11 +12,11 @@ ConfigList::ConfigList(QObject* parent, const QVariantList& defaults)
     : ConfigNode(parent)
     , m_defaults(QJsonArray::fromVariantList(defaults)) {}
 
-int ConfigList::count() const {
+int ConfigList::getCount() const {
     return static_cast<int>(m_items.size());
 }
 
-QVariantList ConfigList::values() const {
+QVariantList ConfigList::getValues() const {
     QVariantList vals;
     vals.reserve(m_items.size());
     for (auto* const item : m_items)
@@ -37,7 +37,7 @@ const QList<ConfigObject*>& ConfigList::items() const {
 
 void ConfigList::remove(int index) {
     if (index < 0 || index >= m_items.size()) {
-        qCWarning(lcConfig) << metaObject()->className() << "cannot remove index" << index << "of" << count();
+        qCWarning(lcConfig) << metaObject()->className() << "cannot remove index" << index << "of" << getCount();
         return;
     }
 
@@ -45,13 +45,13 @@ void ConfigList::remove(int index) {
 
     m_loaded = true;
     emit countChanged();
-    emit valuesChanged();
+    emit elementsChanged();
     notifyChanged();
 }
 
 void ConfigList::move(int from, int to) {
     if (from < 0 || from >= m_items.size() || to < 0 || to >= m_items.size()) {
-        qCWarning(lcConfig) << metaObject()->className() << "cannot move" << from << "to" << to << "of" << count();
+        qCWarning(lcConfig) << metaObject()->className() << "cannot move" << from << "to" << to << "of" << getCount();
         return;
     }
 
@@ -61,7 +61,7 @@ void ConfigList::move(int from, int to) {
     m_items.move(from, to);
 
     m_loaded = true;
-    emit valuesChanged();
+    emit elementsChanged();
     notifyChanged();
 }
 
@@ -73,7 +73,7 @@ void ConfigList::clear() {
 
     m_loaded = true;
     emit countChanged();
-    emit valuesChanged();
+    emit elementsChanged();
     notifyChanged();
 }
 
@@ -132,7 +132,7 @@ ConfigObject* ConfigList::insertItem(const QVariantMap& props, int index) {
 
     m_loaded = true;
     emit countChanged();
-    emit valuesChanged();
+    emit elementsChanged();
     notifyChanged();
 
     return item;
@@ -227,7 +227,7 @@ void ConfigList::populate(const QJsonArray& arr) {
     if (m_items.size() != old.size())
         emit countChanged();
 
-    emit valuesChanged();
+    emit elementsChanged();
 
     // Persistence is gated on m_loaded, not on silence, so defaults still serialise to nothing
     notifyChanged();
@@ -316,7 +316,7 @@ void ConfigList::onItemChanged() {
 }
 
 void ConfigList::notifyChanged() {
-    notifyPropertyChanged(u"values"_s, count());
+    notifyPropertyChanged(u"elements"_s, getCount());
 }
 
 } // namespace caelestia::config

@@ -61,7 +61,7 @@ StyledRect {
             model: ScriptModel {
                 id: model
 
-                values: root.Config.bar.statusIcons.values.filter(e => e.enabled)
+                values: root.Config.bar.statusIcons.elements.filter(e => e.enabled)
             }
 
             DelegateChooser {

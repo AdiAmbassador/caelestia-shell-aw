@@ -14,14 +14,14 @@ class ConfigList : public ConfigNode {
     Q_OBJECT
     QML_ANONYMOUS
 
-    Q_PROPERTY(int count READ count NOTIFY countChanged)
-    Q_PROPERTY(QVariantList values READ values NOTIFY valuesChanged)
+    Q_PROPERTY(int count READ getCount NOTIFY countChanged)
+    Q_PROPERTY(QVariantList elements READ getValues NOTIFY elementsChanged)
 
 public:
     explicit ConfigList(QObject* parent = nullptr, const QVariantList& defaults = {});
 
-    [[nodiscard]] int count() const;
-    [[nodiscard]] QVariantList values() const;
+    [[nodiscard]] int getCount() const;
+    [[nodiscard]] QVariantList getValues() const;
     [[nodiscard]] ConfigObject* itemAt(int index) const;
     [[nodiscard]] const QList<ConfigObject*>& items() const;
 
@@ -37,7 +37,7 @@ public:
 
 signals:
     void countChanged();
-    void valuesChanged();
+    void elementsChanged();
 
 protected:
     // Supplied by CONFIG_LIST_TYPE, not callable from a ConfigList ctor (vtable incomplete)

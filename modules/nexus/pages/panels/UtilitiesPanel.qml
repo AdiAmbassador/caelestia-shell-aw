@@ -8,7 +8,7 @@ PageBase {
     id: root
 
     function isToggleOn(id: string): bool {
-        const item = Config.utilities.quickToggles.values.find(t => t.id === id);
+        const item = Config.utilities.quickToggles.elements.find(t => t.id === id);
         return item?.enabled ?? false;
     }
 

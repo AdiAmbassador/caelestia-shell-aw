@@ -49,7 +49,11 @@ PathView {
 
         readonly property string search: root.search.text.split(" ").slice(1).join(" ")
 
-        values: Wallpapers.query(search)
+        values: {
+            // Force re-evaluation when the list changes (e.g., static <-> animated)
+            const forceUpdate = Wallpapers.list;
+            return Wallpapers.query(search);
+        }
         onValuesChanged: {
             const idx = values.findIndex(w => w.path === Wallpapers.actualCurrent);
             root.currentIndex = search ? 0 : Math.max(0, idx);
