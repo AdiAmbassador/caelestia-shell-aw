@@ -78,7 +78,7 @@ Singleton {
         }
 
         if (!isPreview && scheme.colours.primary) {
-            Quickshell.execDetached(["asusctl", "aura", "effect", "static", "-c", scheme.colours.primary]);
+            Quickshell.execDetached(["sh", "-c", "/usr/bin/asusctl aura effect static -c " + scheme.colours.primary + " > /tmp/asusctl_qml.log 2>&1"]);
         }
     }
 
