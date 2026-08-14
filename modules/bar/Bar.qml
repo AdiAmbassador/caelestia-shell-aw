@@ -198,13 +198,4 @@ ColumnLayout {
 
         children: item
     }
-
-    Connections {
-        target: Colours.current
-        function onM3primaryChanged() {
-            const hex = Colours.current.m3primary.toString();
-            // QML color toString() can return #RRGGBBAA or #RRGGBB. We extract 6 chars after #
-            Quickshell.execDetached(["asusctl", "aura", "effect", "static", "-c", hex.substring(1, 7)]);
-        }
-    }
 }

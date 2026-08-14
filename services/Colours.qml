@@ -76,6 +76,10 @@ Singleton {
             if (colours.hasOwnProperty(propName))
                 colours[propName] = `#${colour}`;
         }
+
+        if (!isPreview && scheme.colours.primary) {
+            Quickshell.execDetached(["asusctl", "aura", "effect", "static", "-c", scheme.colours.primary]);
+        }
     }
 
     function setMode(mode: string): void {
