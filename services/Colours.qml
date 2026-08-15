@@ -59,6 +59,10 @@ Singleton {
         return Qt.hsla(c.hslHue, c.hslSaturation, 0.1, 1);
     }
 
+    function boostSaturation(c: color): color {
+        return Qt.hsla(c.hslHue, Math.min(1.0, c.hslSaturation * 1.1), c.hslLightness, c.a);
+    }
+
     function load(data: string, isPreview: bool): void {
         const colours = isPreview ? preview : current;
         const scheme = JSON.parse(data);
@@ -78,7 +82,15 @@ Singleton {
         }
 
         if (!isPreview && scheme.colours.primary) {
-            Quickshell.execDetached(["sh", "-c", "/usr/bin/asusctl aura effect static -c " + scheme.colours.primary + " > /tmp/asusctl_qml.log 2>&1"]);
+            try {
+                const baseColor = boostSaturation("#" + scheme.colours.primary);
+                const r = Math.round(baseColor.r * 255).toString(16).padStart(2, '0');
+                const g = Math.round(baseColor.g * 255).toString(16).padStart(2, '0');
+                const b = Math.round(baseColor.b * 255).toString(16).padStart(2, '0');
+                Quickshell.execDetached(["sh", "-c", "/usr/bin/asusctl aura effect static -c " + (r + g + b) + " > /dev/null 2>&1"]);
+            } catch (e) {
+                console.log("Could not apply keyboard color (asusctl might not be installed): " + e);
+            }
         }
     }
 
